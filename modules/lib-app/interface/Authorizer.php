@@ -11,4 +11,6 @@ interface Authorizer
 {
 
     static function hasScope(string $scope): bool;
+
+    static function getAppId(): ?int;
 }

@@ -13,22 +13,28 @@ class App extends \Mim\Service
 {
 
     private $app;
+    private $authorizer;
 
     public function __construct(){
-        $authorizer = \Mim::$app->user->getAuthorizer();
-        if(!$authorizer)
-            return;
+        $auths = \Mim::$app->config->libApp->authorizer;
+        foreach($auths as $mod => $serv){
+            $authorizer = \Mim::$app->{$serv}->getAuthorizer();
+            if(!$authorizer)
+                continue;
 
-        if(!is_subclass_of($authorizer, 'LibApp\\Iface\\Authorizer'))
-            return;
+            if(!is_subclass_of($authorizer, 'LibApp\\Iface\\Authorizer'))
+                continue;
 
-        $session = \Mim::$app->user->getSession();
-        if(!isset($session->app))
-            return;
+            $app_id = $authorizer::getAppId();
+            if(!$app_id)
+                continue;
 
-        $app = _App::getOne(['id'=>$session->app]);
-        if($app)
-            $this->app = $app;
+            $app = _App::getOne(['id'=>$app_id]);
+            if($app)
+                $this->app = $app;
+
+            $this->authorizer = $authorizer;
+        }
     }
 
     public function __get($name) {
@@ -42,13 +48,13 @@ class App extends \Mim\Service
     }
 
     public function revoke(): void{
-        $authorizer = \Mim::$app->user->getAuthorizer();
+        $authorizer = $this->authorizer;
         if($authorizer)
             $authorizer::logout();
     }
 
     public function hasScope(string $scope): bool{
-        $authorizer = \Mim::$app->user->getAuthorizer();
+        $authorizer = $this->authorizer;
         if($authorizer)
             return $authorizer::hasScope($scope);
         return false;

@@ -12,6 +12,26 @@ Jalankan perintah di bawah di folder aplikasi:
 mim app install lib-app
 ```
 
+## Konfigurasi
+
+Tambahkan konfigurasi seperti di bawah untuk menentukan service apa saja yang
+akan digunakan untuk mengambil informasi authorizer:
+
+```php
+return [
+    'libApp' => [
+        'authorizer' => [
+            '/module/' => '/service/',
+            'lib-user' => 'user',
+            'profile-auth' => 'profile'
+        ]
+    ]
+];
+```
+
+Masing-masing authorizer harus memiliki method `getAuthorizer` yang akan
+mengembalikan class yang mengimplementasikan interface `LibApp\\Iface\\Authorizer`
+
 ## Pengunaan
 
 Module ini membuat satu service dengan nama app yang bisa di panggil dari
@@ -38,14 +58,4 @@ tambahan method:
 
 ### hasScope(string $scope): bool
 
-Selain itu, perintah `getSession` pada authorizer harus juga mengembalikan properti
-`app` yang berisi aplikasi id yang sedang digunakan.
-
-```php
-$session = (object)[
-    'type' => 'cookie',
-    'expires' => time() + 60,
-    'token' => 'random-string',
-    'app' => 1 | NULL
-];
-```
+### getAppId(): ?int

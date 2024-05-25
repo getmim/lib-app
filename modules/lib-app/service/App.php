@@ -29,7 +29,9 @@ class App extends \Mim\Service
                 }
             }
 
+            $authorizer = $serv;
             if (!is_subclass_of($authorizer, 'LibApp\\Iface\\Authorizer')) {
+                deb('aw');
                 continue;
             }
 

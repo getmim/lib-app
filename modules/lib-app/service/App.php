@@ -18,13 +18,12 @@ class App extends \Mim\Service
     public function __construct()
     {
         $auths = \Mim::$app->config->libApp->authorizer;
-        foreach ($auths as $mod => $serv)
-        {
+        foreach ($auths as $mod => $serv) {
             $services = \Mim::$app->config->service;
 
             if (isset($services->{$serv})) {
                 $authorizer = \Mim::$app->{$serv}->getAuthorizer();
-                if(!$authorizer) {
+                if (!$authorizer) {
                     continue;
                 }
             }
@@ -36,7 +35,7 @@ class App extends \Mim\Service
             }
 
             $app_id = $authorizer::getAppId();
-            if(!$app_id) {
+            if (!$app_id) {
                 continue;
             }
 

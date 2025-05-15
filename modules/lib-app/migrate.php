@@ -11,7 +11,7 @@ return [
                 'attrs' => [
                     'unsigned' => true,
                     'primary_key' => true,
-                    'auto_increment' => true 
+                    'auto_increment' => true
                 ],
                 'index' => 1000
             ],
@@ -36,9 +36,17 @@ return [
                 'length' => 100,
                 'attrs' => [
                     'null' => false,
-                    'unique' => true 
+                    'unique' => true
                 ],
                 'index' => 4000
+            ],
+            'updated' => [
+                'type' => 'TIMESTAMP',
+                'attrs' => [
+                    'default' => 'CURRENT_TIMESTAMP',
+                    'update' => 'CURRENT_TIMESTAMP'
+                ],
+                'index' => 5000
             ],
             'created' => [
                 'type' => 'TIMESTAMP',

@@ -9,8 +9,7 @@ namespace LibApp\Iface;
 
 interface Authorizer
 {
+    public static function hasScope(string $scope): bool;
 
-    static function hasScope(string $scope): bool;
-
-    static function getAppId(): ?int;
+    public static function getAppId(): ?int;
 }

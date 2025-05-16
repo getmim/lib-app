@@ -30,7 +30,6 @@ class App extends \Mim\Service
 
             $authorizer = $serv;
             if (!is_subclass_of($authorizer, 'LibApp\\Iface\\Authorizer')) {
-                deb('aw');
                 continue;
             }
 
@@ -60,6 +59,41 @@ class App extends \Mim\Service
     public function isAuthorized(): bool
     {
         return !!$this->app;
+    }
+
+    public function isSigned(string $format): bool
+    {
+        $req = &\Mim::$app->req;
+        $timestamp = $req->getServer('HTTP_X_TIMESTAMP');
+        $client_signature = $req->getServer('HTTP_X_SIGNATURE');
+        if (!$client_signature || !$timestamp) {
+            return false;
+        }
+
+        $fields = explode(':', $format);
+        $values = [];
+
+        foreach ($fields as $field) {
+            if ($field == 'timestamp') {
+                $values[] = $timestamp;
+            } else {
+                $value = $req->getBody($field);
+                if (!$value) {
+                    $value = $req->getPost($field);
+                }
+                if (!$value) {
+                    $value = $req->getQuery($field);
+                }
+                $values[] = $value;
+            }
+        }
+
+        $payload = implode(':', $values);
+        $authorizer = $this->authorizer;
+        $secret = $authorizer::getAppSecret();
+        $serv_signature = hash_hmac('sha256', $payload, $secret);
+
+        return $client_signature == $serv_signature;
     }
 
     public function revoke(): void

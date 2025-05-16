@@ -59,3 +59,5 @@ tambahan method:
 ### hasScope(string $scope): bool
 
 ### getAppId(): ?int
+
+### getAppSecret(): ?string

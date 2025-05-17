@@ -78,10 +78,10 @@ class App extends \Mim\Service
                 $values[] = $timestamp;
             } else {
                 $value = $req->getBody($field);
-                if (!$value) {
+                if (is_null($value)) {
                     $value = $req->getPost($field);
                 }
-                if (!$value) {
+                if (is_null($value)) {
                     $value = $req->getQuery($field);
                 }
                 $values[] = $value;
